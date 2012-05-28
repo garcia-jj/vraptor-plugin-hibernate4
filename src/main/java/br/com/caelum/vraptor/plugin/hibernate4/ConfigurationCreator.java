@@ -37,14 +37,8 @@ public class ConfigurationCreator implements ComponentFactory<Configuration> {
 	 */
 	@PostConstruct
 	protected void create() {
-		cfg = new Configuration().configure();
-		configureExtras();
-	}
 
-	/**
-	 * This method can override if you want to configure more things.
-	 */
-	public void configureExtras() {
+		cfg = new Configuration().configure();
 
 		try {
 
@@ -55,8 +49,16 @@ public class ConfigurationCreator implements ComponentFactory<Configuration> {
 			getInstance().addProperties(hibernateProperties);
 
 		} catch (IOException e) {
-			throw new RuntimeException("Erro durante a leitura do arquivo hibernate.properties", e);
+			throw new RuntimeException("Error reading hibernate.properties", e);
 		}
+
+		configureExtras();
+	}
+
+	/**
+	 * This method can override if you want to configure more things.
+	 */
+	public void configureExtras() {
 
 	}
 
