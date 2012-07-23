@@ -26,18 +26,16 @@
 	</scm>
 
 	<dependencies>
-
-
 		<!-- [hibernate] -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<version>4.1.2</version>
+			<version>4.1.2.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
-			<version>4.1.2</version>
+			<version>4.1.2.Final</version>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -56,7 +54,6 @@
 			<groupId>br.com.caelum.vraptor</groupId>
 			<artifactId>vraptor-environment</artifactId>
 			<version>1.0.1</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

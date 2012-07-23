@@ -8,6 +8,10 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
 import org.junit.Test;
+import org.mockito.Mock;
+
+import br.com.caelum.vraptor.environment.DefaultEnvironment;
+import br.com.caelum.vraptor.environment.Environment;
 
 public class PluginTest {
 
@@ -22,6 +26,8 @@ public class PluginTest {
 
     private SessionCreator sessionCreator;
     private Session session;
+    
+    private @Mock Environment environment;
 
     @Test
     public void main() {
@@ -40,7 +46,7 @@ public class PluginTest {
     }
 
     private void buildConfiguration() {
-        configurationCreator = new ConfigurationCreator();
+        configurationCreator = new ConfigurationCreator(environment);
         configurationCreator.create();
         configuration = configurationCreator.getInstance();
     }
