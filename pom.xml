@@ -3,7 +3,7 @@
 
 	<groupId>br.com.caelum.vraptor</groupId>
 	<artifactId>vraptor-plugin-hibernate4</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>vraptor-plugin-hibernate4</name>
@@ -20,14 +20,24 @@
 	</parent>
 
 	<scm>
-		<url>http://github.com/garcia-jj/vraptor-plugin-hibernate4</url>
-		<connection>scm:git:git://github.com/garcia-jj/vraptor-plugin-hibernate4</connection>
-		<developerConnection>scm:git:git@github.com:garcia-jj/vraptor-plugin-hibernate4.git</developerConnection>
+		<url>http://github.com/dennysfredericci/vraptor-plugin-hibernate4</url>
+		<connection>scm:git:git://github.com/dennysfredericci/vraptor-plugin-hibernate4</connection>
+		<developerConnection>scm:git:git@github.com:dennysfredericci/vraptor-plugin-hibernate4.git</developerConnection>
 	</scm>
 
+	<distributionManagement>
+		<downloadUrl>https://repository-fredericci.forge.cloudbees.com/</downloadUrl>
+		<repository>
+			<id>cloudbees-release</id>
+			<url>dav:https://repository-fredericci.forge.cloudbees.com/release</url>
+		</repository>
+		<snapshotRepository>
+			<id>cloudbees-snapshot</id>
+			<url>dav:https://repository-fredericci.forge.cloudbees.com/snapshot/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
 	<dependencies>
-
-
 		<!-- [hibernate] -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -40,9 +50,9 @@
 			<version>4.1.2</version>
 		</dependency>
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-annotations</artifactId>
-			<version>3.5.6-Final</version>
+			<groupId>org.hibernate.common</groupId>
+			<artifactId>hibernate-commons-annotations</artifactId>
+			<version>4.0.1.Final</version>
 		</dependency>
 		<!-- [/hibernate] -->
 
@@ -56,7 +66,6 @@
 			<groupId>br.com.caelum.vraptor</groupId>
 			<artifactId>vraptor-environment</artifactId>
 			<version>1.0.1</version>
-			<scope>compile</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -96,5 +105,12 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-webdav-jackrabbit</artifactId>
+				<version>2.2</version>
+			</extension>
+		</extensions>
 	</build>
 </project>
