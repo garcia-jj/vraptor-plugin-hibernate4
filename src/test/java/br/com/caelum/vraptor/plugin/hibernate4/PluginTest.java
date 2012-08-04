@@ -78,7 +78,7 @@ public class PluginTest {
     }
 
     private void buildServiceRegistry() {
-        serviceRegistryCreator = new ServiceRegistryCreator(configuration);
+        serviceRegistryCreator = new ServiceRegistryCreator(this.configurationCreator);
         serviceRegistryCreator.create();
         serviceRegistry = serviceRegistryCreator.getInstance();
     }
