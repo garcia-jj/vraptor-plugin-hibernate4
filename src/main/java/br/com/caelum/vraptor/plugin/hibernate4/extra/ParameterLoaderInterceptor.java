@@ -15,8 +15,9 @@
  */
 package br.com.caelum.vraptor.plugin.hibernate4.extra;
 
-import static br.com.caelum.vraptor.util.collections.Filters.hasAnnotation;
+
 import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Predicates.instanceOf;
 import static com.google.common.collect.Iterables.any;
 import static com.google.common.collect.Iterables.isEmpty;
 import static java.util.Arrays.asList;
@@ -43,6 +44,7 @@ import br.com.caelum.vraptor.interceptor.ParametersInstantiatorInterceptor;
 import br.com.caelum.vraptor.resource.ResourceMethod;
 import br.com.caelum.vraptor.view.FlashScope;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
 /**
@@ -132,5 +134,13 @@ public class ParameterLoaderInterceptor implements Interceptor {
 
     private boolean hasLoadAnnotation(Annotation[] annotations) {
         return !isEmpty(Iterables.filter(asList(annotations), Load.class));
+    }
+
+    public static Predicate<Annotation[]> hasAnnotation(final Class<?> annotation) {
+        return new Predicate<Annotation[]>() {
+            public boolean apply(Annotation[] param) {
+                return any(asList(param), instanceOf(annotation));
+            }
+        };
     }
 }
