@@ -7,7 +7,7 @@ VRaptor Hibernate 4 Plugin provides support to use with Hibernate 4.
 
 You only need to copy the jar to your classpath. VRaptor will register plugin when 
 your application starts without any configurations. Downloads are available in 
-<a href="https://code.google.com/p/vraptor3/">VRaptor download site</a> or in Maven Repository:
+<a href="http://repo1.maven.org/maven2/br/com/caelum/vraptor/vraptor-plugin-hibernate4/">here</a> or in Maven Repository:
 
 	<dependency>
 	  <groupId>br.com.caelum.vraptor</groupId>
