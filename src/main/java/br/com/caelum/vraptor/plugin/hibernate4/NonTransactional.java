@@ -1,3 +1,8 @@
+/**
+ * Prevents the {@link HibernateTransactionInterceptor} from creating a transaction to the request method.
+ * 
+ * @author dtelaroli
+ */
 package br.com.caelum.vraptor.plugin.hibernate4;
 
 import java.lang.annotation.ElementType;
