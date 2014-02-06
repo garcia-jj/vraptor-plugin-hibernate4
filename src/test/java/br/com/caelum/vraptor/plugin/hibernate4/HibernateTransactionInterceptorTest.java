@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 package br.com.caelum.vraptor.plugin.hibernate4;
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -27,8 +29,10 @@ import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import br.com.caelum.vraptor.Resource;
 import br.com.caelum.vraptor.Validator;
 import br.com.caelum.vraptor.core.InterceptorStack;
+import br.com.caelum.vraptor.resource.DefaultResourceMethod;
 import br.com.caelum.vraptor.resource.ResourceMethod;
 
 public class HibernateTransactionInterceptorTest {
@@ -70,6 +74,30 @@ public class HibernateTransactionInterceptorTest {
         interceptor.intercept(stack, method, instance);
 
         verify(transaction).rollback();
+    }
+    
+    @Resource
+    static class TestController {
+    	public void transactional() {}
+    	
+    	@NonTransactional
+    	public void nonTransactional() {}
+    }
+    
+    @Test
+    public void shouldAcceptWithoutAnnotationNonTransactional() throws Exception {
+    	HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator);
+		method = DefaultResourceMethod.instanceFor(TestController.class, TestController.class.getMethod("transactional"));
+		
+		assertThat(interceptor.accepts(method), equalTo(true));
+    }
+    
+    @Test
+    public void shouldNotAcceptIfAnnotationNonTransactionalPresent() throws Exception {
+    	HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator);
+    	method = DefaultResourceMethod.instanceFor(TestController.class, TestController.class.getMethod("nonTransactional"));
+		
+		assertThat(interceptor.accepts(method), equalTo(false));
     }
 
 }
