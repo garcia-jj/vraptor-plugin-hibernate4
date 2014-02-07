@@ -58,10 +58,7 @@ public class HibernateTransactionInterceptor
     }
 
     public boolean accepts(ResourceMethod method) {
-        return !isNonTransactional(method);
+        return !method.containsAnnotation(NonTransactional.class);
     }
 
-	private boolean isNonTransactional(ResourceMethod method) {
-		return method.getMethod().getAnnotation(NonTransactional.class) != null;
-	}
 }
