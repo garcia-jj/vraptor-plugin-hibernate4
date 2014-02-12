@@ -1,6 +1,6 @@
 # VRaptor Hibernate 4 Plugin
 
-VRaptor Hibernate 4 Plugin provides support to use with Hibernate 4. 
+VRaptor Hibernate 4 Plugin provides support to use with Hibernate 4 if you are using VRaptor 3.  For VRaptor 4 releases checkout http://github.com/caelum/vraptor-hibernate.
 
 
 # How to install?
