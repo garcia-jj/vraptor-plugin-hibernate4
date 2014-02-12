@@ -26,7 +26,9 @@ import br.com.caelum.vraptor.interceptor.Interceptor;
 import br.com.caelum.vraptor.resource.ResourceMethod;
 
 /**
- * An example of Hibernate Transaction management on VRaptor
+ * Interceptor that manages Hibernate transaction. All methods that don't have {@link NonTransactional}
+ * annotation will intercepted and a transaction will open, using Open Session in View pattern. If an error
+ * occurs or if {@link Validator#hasErrors()} contains an element, transaction will rollbacked.
  * 
  * @author Lucas Cavalcanti
  */
