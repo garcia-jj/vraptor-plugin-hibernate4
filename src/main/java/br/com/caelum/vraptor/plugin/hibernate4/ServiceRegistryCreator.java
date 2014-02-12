@@ -19,9 +19,9 @@ package br.com.caelum.vraptor.plugin.hibernate4;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
-import org.hibernate.service.ServiceRegistryBuilder;
 
 import br.com.caelum.vraptor.ioc.ApplicationScoped;
 import br.com.caelum.vraptor.ioc.Component;
@@ -35,33 +35,32 @@ import br.com.caelum.vraptor.ioc.ComponentFactory;
 @Component
 @ApplicationScoped
 public class ServiceRegistryCreator
-    implements ComponentFactory<ServiceRegistry> {
+	implements ComponentFactory<ServiceRegistry> {
 
-    private final Configuration cfg;
-    private ServiceRegistry serviceRegistry;
+	private final Configuration cfg;
+	private ServiceRegistry serviceRegistry;
 
-    public ServiceRegistryCreator(Configuration cfg) {
-        this.cfg = cfg;
-    }
+	public ServiceRegistryCreator(Configuration cfg) {
+		this.cfg = cfg;
+	}
 
-    /**
-     * Builds a {@link ServiceRegistry}.
-     */
-    @PostConstruct
-    public void create() {
-        ServiceRegistryBuilder builder = new ServiceRegistryBuilder();
-        serviceRegistry = builder.applySettings(cfg.getProperties()).buildServiceRegistry();
-    }
+	/**
+	 * Builds a {@link ServiceRegistry}.
+	 */
+	@PostConstruct
+	public void create() {
+		serviceRegistry = new StandardServiceRegistryBuilder().applySettings(cfg.getProperties()).build();
+	}
 
-    /**
-     * Destroy the {@link ServiceRegistry} when application is shutting down.
-     */
-    @PreDestroy
-    public void destroy() {
-        ServiceRegistryBuilder.destroy(serviceRegistry);
-    }
+	/**
+	 * Destroy the {@link ServiceRegistry} when application is shutting down.
+	 */
+	@PreDestroy
+	public void destroy() {
+		StandardServiceRegistryBuilder.destroy(serviceRegistry);
+	}
 
-    public ServiceRegistry getInstance() {
-        return serviceRegistry;
-    }
+	public ServiceRegistry getInstance() {
+		return serviceRegistry;
+	}
 }
