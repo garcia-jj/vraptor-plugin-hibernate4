@@ -37,67 +37,67 @@ import br.com.caelum.vraptor.resource.ResourceMethod;
 
 public class HibernateTransactionInterceptorTest {
 
-    @Mock private Session session;
-    @Mock private InterceptorStack stack;
-    @Mock private ResourceMethod method;
-    @Mock private Transaction transaction;
-    private Object instance;
-    @Mock private Validator validator;
+	@Mock private Session session;
+	@Mock private InterceptorStack stack;
+	@Mock private ResourceMethod method;
+	@Mock private Transaction transaction;
+	private Object instance;
+	@Mock private Validator validator;
 
-    @Before
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
+	@Before
+	public void setUp() {
+		MockitoAnnotations.initMocks(this);
+	}
 
-    @Test
-    public void shouldStartAndCommitTransaction() throws Exception {
-        HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator);
+	@Test
+	public void shouldStartAndCommitTransaction() throws Exception {
+		HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator);
 
-        when(session.beginTransaction()).thenReturn(transaction);
-        when(transaction.isActive()).thenReturn(true);
+		when(session.beginTransaction()).thenReturn(transaction);
+		when(transaction.isActive()).thenReturn(true);
 
-        interceptor.intercept(stack, method, instance);
+		interceptor.intercept(stack, method, instance);
 
-        InOrder callOrder = inOrder(session, transaction, stack);
-        callOrder.verify(session).beginTransaction();
-        callOrder.verify(stack).next(method, instance);
-        callOrder.verify(transaction).commit();
-    }
+		InOrder callOrder = inOrder(session, transaction, stack);
+		callOrder.verify(session).beginTransaction();
+		callOrder.verify(stack).next(method, instance);
+		callOrder.verify(transaction).commit();
+	}
 
-    @Test
-    public void shouldRollbackTransactionIfStillActiveWhenExecutionFinishes() throws Exception {
-        HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator);
+	@Test
+	public void shouldRollbackTransactionIfStillActiveWhenExecutionFinishes() throws Exception {
+		HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator);
 
-        when(session.beginTransaction()).thenReturn(transaction);
-        when(transaction.isActive()).thenReturn(true);
+		when(session.beginTransaction()).thenReturn(transaction);
+		when(transaction.isActive()).thenReturn(true);
 
-        interceptor.intercept(stack, method, instance);
+		interceptor.intercept(stack, method, instance);
 
-        verify(transaction).rollback();
-    }
-    
-    @Resource
-    static class TestController {
-    	public void transactional() {}
-    	
-    	@NonTransactional
-    	public void nonTransactional() {}
-    }
-    
-    @Test
-    public void shouldAcceptWithoutAnnotationNonTransactional() throws Exception {
-    	HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator);
+		verify(transaction).rollback();
+	}
+	
+	@Resource
+	static class TestController {
+		public void transactional() {}
+		
+		@NonTransactional
+		public void nonTransactional() {}
+	}
+	
+	@Test
+	public void shouldAcceptWithoutAnnotationNonTransactional() throws Exception {
+		HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator);
 		method = DefaultResourceMethod.instanceFor(TestController.class, TestController.class.getMethod("transactional"));
 		
 		assertThat(interceptor.accepts(method), equalTo(true));
-    }
-    
-    @Test
-    public void shouldNotAcceptIfAnnotationNonTransactionalPresent() throws Exception {
-    	HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator);
-    	method = DefaultResourceMethod.instanceFor(TestController.class, TestController.class.getMethod("nonTransactional"));
+	}
+	
+	@Test
+	public void shouldNotAcceptIfAnnotationNonTransactionalPresent() throws Exception {
+		HibernateTransactionInterceptor interceptor = new HibernateTransactionInterceptor(session, validator);
+		method = DefaultResourceMethod.instanceFor(TestController.class, TestController.class.getMethod("nonTransactional"));
 		
 		assertThat(interceptor.accepts(method), equalTo(false));
-    }
+	}
 
 }

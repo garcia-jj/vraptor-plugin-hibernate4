@@ -60,87 +60,87 @@ import com.google.common.collect.Iterables;
 @Lazy
 public class ParameterLoaderInterceptor implements Interceptor {
 
-    private final Session session;
-    private final HttpServletRequest request;
-    private final ParameterNameProvider provider;
-    private final Result result;
-    private final Converters converters;
-    private final Localization localization;
-    private final FlashScope flash;
+	private final Session session;
+	private final HttpServletRequest request;
+	private final ParameterNameProvider provider;
+	private final Result result;
+	private final Converters converters;
+	private final Localization localization;
+	private final FlashScope flash;
 
-    public ParameterLoaderInterceptor(Session session, HttpServletRequest request, ParameterNameProvider provider,
-            Result result, Converters converters, Localization localization, FlashScope flash) {
-        this.session = session;
-        this.request = request;
-        this.provider = provider;
-        this.result = result;
-        this.converters = converters;
-        this.localization = localization;
-        this.flash = flash;
-    }
+	public ParameterLoaderInterceptor(Session session, HttpServletRequest request, ParameterNameProvider provider,
+			Result result, Converters converters, Localization localization, FlashScope flash) {
+		this.session = session;
+		this.request = request;
+		this.provider = provider;
+		this.result = result;
+		this.converters = converters;
+		this.localization = localization;
+		this.flash = flash;
+	}
 
-    public boolean accepts(ResourceMethod method) {
-        return any(asList(method.getMethod().getParameterAnnotations()), hasAnnotation(Load.class));
-    }
+	public boolean accepts(ResourceMethod method) {
+		return any(asList(method.getMethod().getParameterAnnotations()), hasAnnotation(Load.class));
+	}
 
-    public void intercept(InterceptorStack stack, ResourceMethod method, Object resourceInstance)
-        throws InterceptionException {
-        Annotation[][] annotations = method.getMethod().getParameterAnnotations();
+	public void intercept(InterceptorStack stack, ResourceMethod method, Object resourceInstance)
+		throws InterceptionException {
+		Annotation[][] annotations = method.getMethod().getParameterAnnotations();
 
-        final String[] names = provider.parameterNamesFor(method.getMethod());
-        final Class<?>[] types = method.getMethod().getParameterTypes();
-        final Object[] args = flash.consumeParameters(method);
+		final String[] names = provider.parameterNamesFor(method.getMethod());
+		final Class<?>[] types = method.getMethod().getParameterTypes();
+		final Object[] args = flash.consumeParameters(method);
 
-        for (int i = 0; i < names.length; i++) {
-            if (hasLoadAnnotation(annotations[i])) {
-                Object loaded = load(names[i], types[i]);
+		for (int i = 0; i < names.length; i++) {
+			if (hasLoadAnnotation(annotations[i])) {
+				Object loaded = load(names[i], types[i]);
 
-                // TODO extract to method, so users can override behaviour
-                if (loaded == null) {
-                    result.notFound();
-                    return;
-                }
+				// TODO extract to method, so users can override behaviour
+				if (loaded == null) {
+					result.notFound();
+					return;
+				}
 
-                if (args != null) {
-                    args[i] = loaded;
-                } else {
-                    request.setAttribute(names[i], loaded);
-                }
-            }
-        }
+				if (args != null) {
+					args[i] = loaded;
+				} else {
+					request.setAttribute(names[i], loaded);
+				}
+			}
+		}
 
-        flash.includeParameters(method, args);
-        stack.next(method, resourceInstance);
-    }
+		flash.includeParameters(method, args);
+		stack.next(method, resourceInstance);
+	}
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    private Object load(String name, Class type) {
-        String idProperty = session.getSessionFactory().getClassMetadata(type).getIdentifierPropertyName();
-        checkArgument(idProperty != null, "Entity %s must have an id property for @Load.", type.getSimpleName());
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private Object load(String name, Class type) {
+		String idProperty = session.getSessionFactory().getClassMetadata(type).getIdentifierPropertyName();
+		checkArgument(idProperty != null, "Entity %s must have an id property for @Load.", type.getSimpleName());
 
-        String parameter = request.getParameter(name + "." + idProperty);
-        if (parameter == null) {
-            return null;
-        }
+		String parameter = request.getParameter(name + "." + idProperty);
+		if (parameter == null) {
+			return null;
+		}
 
-        Type idType = session.getSessionFactory().getClassMetadata(type).getIdentifierType();
-        Converter<?> converter = converters.to(idType.getReturnedClass());
-        checkArgument(converter != null, "Entity %s id type %s must have a converter", 
-                type.getSimpleName(), idType);
+		Type idType = session.getSessionFactory().getClassMetadata(type).getIdentifierType();
+		Converter<?> converter = converters.to(idType.getReturnedClass());
+		checkArgument(converter != null, "Entity %s id type %s must have a converter", 
+				type.getSimpleName(), idType);
 
-        Serializable id = (Serializable) converter.convert(parameter, type, localization.getBundle());
-        return session.get(type, id);
-    }
+		Serializable id = (Serializable) converter.convert(parameter, type, localization.getBundle());
+		return session.get(type, id);
+	}
 
-    private boolean hasLoadAnnotation(Annotation[] annotations) {
-        return !isEmpty(Iterables.filter(asList(annotations), Load.class));
-    }
+	private boolean hasLoadAnnotation(Annotation[] annotations) {
+		return !isEmpty(Iterables.filter(asList(annotations), Load.class));
+	}
 
-    public static Predicate<Annotation[]> hasAnnotation(final Class<?> annotation) {
-        return new Predicate<Annotation[]>() {
-            public boolean apply(Annotation[] param) {
-                return any(asList(param), instanceOf(annotation));
-            }
-        };
-    }
+	public static Predicate<Annotation[]> hasAnnotation(final Class<?> annotation) {
+		return new Predicate<Annotation[]>() {
+			public boolean apply(Annotation[] param) {
+				return any(asList(param), instanceOf(annotation));
+			}
+		};
+	}
 }

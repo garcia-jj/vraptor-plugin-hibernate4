@@ -32,33 +32,33 @@ import br.com.caelum.vraptor.resource.ResourceMethod;
  */
 @Intercepts
 public class HibernateTransactionInterceptor
-    implements Interceptor {
+	implements Interceptor {
 
-    private final Session session;
-    private final Validator validator;
+	private final Session session;
+	private final Validator validator;
 
-    public HibernateTransactionInterceptor(Session session, Validator validator) {
-        this.session = session;
-        this.validator = validator;
-    }
+	public HibernateTransactionInterceptor(Session session, Validator validator) {
+		this.session = session;
+		this.validator = validator;
+	}
 
-    public void intercept(InterceptorStack stack, ResourceMethod method, Object instance) {
-        Transaction transaction = null;
-        try {
-            transaction = session.beginTransaction();
-            stack.next(method, instance);
-            if (!validator.hasErrors() && transaction.isActive()) {
-                transaction.commit();
-            }
-        } finally {
-            if (transaction != null && transaction.isActive()) {
-                transaction.rollback();
-            }
-        }
-    }
+	public void intercept(InterceptorStack stack, ResourceMethod method, Object instance) {
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+			stack.next(method, instance);
+			if (!validator.hasErrors() && transaction.isActive()) {
+				transaction.commit();
+			}
+		} finally {
+			if (transaction != null && transaction.isActive()) {
+				transaction.rollback();
+			}
+		}
+	}
 
-    public boolean accepts(ResourceMethod method) {
-        return !method.containsAnnotation(NonTransactional.class);
-    }
+	public boolean accepts(ResourceMethod method) {
+		return !method.containsAnnotation(NonTransactional.class);
+	}
 
 }

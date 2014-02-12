@@ -37,104 +37,104 @@ import br.com.caelum.vraptor.ioc.Container;
 
 public class PluginTest {
 
-    private ConfigurationCreator configurationCreator;
-    private Configuration configuration;
+	private ConfigurationCreator configurationCreator;
+	private Configuration configuration;
 
-    private ServiceRegistryCreator serviceRegistryCreator;
-    private ServiceRegistry serviceRegistry;
+	private ServiceRegistryCreator serviceRegistryCreator;
+	private ServiceRegistry serviceRegistry;
 
-    private SessionFactoryCreator sessionFactoryCreator;
-    private SessionFactory sessionFactory;
+	private SessionFactoryCreator sessionFactoryCreator;
+	private SessionFactory sessionFactory;
 
-    private SessionCreator sessionCreator;
-    private Session session;
+	private SessionCreator sessionCreator;
+	private Session session;
 
-    private Container container;
-    private Environment env;
+	private Container container;
+	private Environment env;
 
-    @Test
-    public void testWithoutEnvironment() {
-        container = mock(Container.class);
-        env = mock(Environment.class);
+	@Test
+	public void testWithoutEnvironment() {
+		container = mock(Container.class);
+		env = mock(Environment.class);
 
-        buildConfigurationWithoutEnvironment();
-        buildServiceRegistry();
-        buildSessionFactory();
-        buildSession();
+		buildConfigurationWithoutEnvironment();
+		buildServiceRegistry();
+		buildSessionFactory();
+		buildSession();
 
-        assertFalse(sessionFactory.isClosed());
-        assertTrue(session.isOpen());
+		assertFalse(sessionFactory.isClosed());
+		assertTrue(session.isOpen());
 
-        destroyObjects();
+		destroyObjects();
 
-        assertFalse(session.isOpen());
-        assertTrue(sessionFactory.isClosed());
-    }
+		assertFalse(session.isOpen());
+		assertTrue(sessionFactory.isClosed());
+	}
 
-    @Test
-    public void testWithEnvironment() {
-        container = mock(Container.class);
-        env = mock(Environment.class);
+	@Test
+	public void testWithEnvironment() {
+		container = mock(Container.class);
+		env = mock(Environment.class);
 
-        buildConfigurationWithEnvironment();
-        buildServiceRegistry();
-        buildSessionFactory();
-        buildSession();
+		buildConfigurationWithEnvironment();
+		buildServiceRegistry();
+		buildSessionFactory();
+		buildSession();
 
-        assertFalse(sessionFactory.isClosed());
-        assertTrue(session.isOpen());
+		assertFalse(sessionFactory.isClosed());
+		assertTrue(session.isOpen());
 
-        destroyObjects();
+		destroyObjects();
 
-        assertFalse(session.isOpen());
-        assertTrue(sessionFactory.isClosed());
-    }
+		assertFalse(session.isOpen());
+		assertTrue(sessionFactory.isClosed());
+	}
 
-    private void buildConfigurationWithoutEnvironment() {
-        when(container.canProvide(Environment.class)).thenReturn(false);
+	private void buildConfigurationWithoutEnvironment() {
+		when(container.canProvide(Environment.class)).thenReturn(false);
 
-        configurationCreator = new ConfigurationCreator(container);
-        configurationCreator = spy(configurationCreator);
-        when(configurationCreator.isEnvironmentAvailable()).thenReturn(false);
-        
-        configurationCreator.create();
-        configuration = configurationCreator.getInstance();
-    }
+		configurationCreator = new ConfigurationCreator(container);
+		configurationCreator = spy(configurationCreator);
+		when(configurationCreator.isEnvironmentAvailable()).thenReturn(false);
+		
+		configurationCreator.create();
+		configuration = configurationCreator.getInstance();
+	}
 
-    private void buildConfigurationWithEnvironment() {
-        when(container.canProvide(Environment.class)).thenReturn(true);
-        when(container.instanceFor(Environment.class)).thenReturn(env);
-        
-        URL hibcfg = getClass().getResource("/hibernate.cfg.xml");
-        stub(env.getResource(anyString())).toReturn(hibcfg);
+	private void buildConfigurationWithEnvironment() {
+		when(container.canProvide(Environment.class)).thenReturn(true);
+		when(container.instanceFor(Environment.class)).thenReturn(env);
+		
+		URL hibcfg = getClass().getResource("/hibernate.cfg.xml");
+		stub(env.getResource(anyString())).toReturn(hibcfg);
 
-        configurationCreator = new ConfigurationCreator(container);
-        configurationCreator.create();
-        configuration = configurationCreator.getInstance();
-    }
+		configurationCreator = new ConfigurationCreator(container);
+		configurationCreator.create();
+		configuration = configurationCreator.getInstance();
+	}
 
-    private void buildServiceRegistry() {
-        serviceRegistryCreator = new ServiceRegistryCreator(configuration);
-        serviceRegistryCreator.create();
-        serviceRegistry = serviceRegistryCreator.getInstance();
-    }
+	private void buildServiceRegistry() {
+		serviceRegistryCreator = new ServiceRegistryCreator(configuration);
+		serviceRegistryCreator.create();
+		serviceRegistry = serviceRegistryCreator.getInstance();
+	}
 
-    private void buildSessionFactory() {
-        sessionFactoryCreator = new SessionFactoryCreator(configuration, serviceRegistry);
-        sessionFactoryCreator.create();
-        sessionFactory = sessionFactoryCreator.getInstance();
-    }
+	private void buildSessionFactory() {
+		sessionFactoryCreator = new SessionFactoryCreator(configuration, serviceRegistry);
+		sessionFactoryCreator.create();
+		sessionFactory = sessionFactoryCreator.getInstance();
+	}
 
-    private void buildSession() {
-        sessionCreator = new SessionCreator(sessionFactory);
-        sessionCreator.create();
-        session = sessionCreator.getInstance();
-    }
+	private void buildSession() {
+		sessionCreator = new SessionCreator(sessionFactory);
+		sessionCreator.create();
+		session = sessionCreator.getInstance();
+	}
 
-    private void destroyObjects() {
-        sessionCreator.destroy();
-        sessionFactoryCreator.destroy();
-        serviceRegistryCreator.destroy();
-    }
+	private void destroyObjects() {
+		sessionCreator.destroy();
+		sessionFactoryCreator.destroy();
+		serviceRegistryCreator.destroy();
+	}
 
 }

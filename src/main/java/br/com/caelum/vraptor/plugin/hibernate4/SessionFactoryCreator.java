@@ -35,36 +35,36 @@ import br.com.caelum.vraptor.ioc.ComponentFactory;
 @Component
 @ApplicationScoped
 public class SessionFactoryCreator
-    implements ComponentFactory<SessionFactory> {
+	implements ComponentFactory<SessionFactory> {
 
-    private final Configuration cfg;
-    private final ServiceRegistry serviceRegistry;
-    private SessionFactory sessionFactory;
+	private final Configuration cfg;
+	private final ServiceRegistry serviceRegistry;
+	private SessionFactory sessionFactory;
 
-    public SessionFactoryCreator(Configuration cfg, ServiceRegistry serviceRegistry) {
-        this.cfg = cfg;
-        this.serviceRegistry = serviceRegistry;
-    }
+	public SessionFactoryCreator(Configuration cfg, ServiceRegistry serviceRegistry) {
+		this.cfg = cfg;
+		this.serviceRegistry = serviceRegistry;
+	}
 
-    /**
-     * Build a {@link SessionFactory}.
-     */
-    @PostConstruct
-    public void create() {
-        sessionFactory = cfg.buildSessionFactory(serviceRegistry);
-    }
+	/**
+	 * Build a {@link SessionFactory}.
+	 */
+	@PostConstruct
+	public void create() {
+		sessionFactory = cfg.buildSessionFactory(serviceRegistry);
+	}
 
-    /**
-     * Closes {@link SessionFactory} if it's not closed.
-     */
-    @PreDestroy
-    public void destroy() {
-        if (!sessionFactory.isClosed()) {
-            sessionFactory.close();
-        }
-    }
+	/**
+	 * Closes {@link SessionFactory} if it's not closed.
+	 */
+	@PreDestroy
+	public void destroy() {
+		if (!sessionFactory.isClosed()) {
+			sessionFactory.close();
+		}
+	}
 
-    public SessionFactory getInstance() {
-        return sessionFactory;
-    }
+	public SessionFactory getInstance() {
+		return sessionFactory;
+	}
 }
