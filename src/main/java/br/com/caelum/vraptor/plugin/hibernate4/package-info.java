@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 /**
  * A simple plugin to provides Hibernate 4.x support to VRaptor.
  */
