@@ -19,9 +19,9 @@ package br.com.caelum.vraptor.plugin.hibernate4;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.service.ServiceRegistry;
+import org.hibernate.service.ServiceRegistryBuilder;
 
 import br.com.caelum.vraptor.ioc.ApplicationScoped;
 import br.com.caelum.vraptor.ioc.Component;
@@ -49,7 +49,7 @@ public class ServiceRegistryCreator
 	 */
 	@PostConstruct
 	public void create() {
-		serviceRegistry = new StandardServiceRegistryBuilder().applySettings(cfg.getProperties()).build();
+		serviceRegistry = new ServiceRegistryBuilder().applySettings(cfg.getProperties()).buildServiceRegistry();
 	}
 
 	/**
@@ -57,7 +57,7 @@ public class ServiceRegistryCreator
 	 */
 	@PreDestroy
 	public void destroy() {
-		StandardServiceRegistryBuilder.destroy(serviceRegistry);
+		ServiceRegistryBuilder.destroy(serviceRegistry);
 	}
 
 	public ServiceRegistry getInstance() {
